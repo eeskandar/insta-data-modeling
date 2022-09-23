@@ -1,10 +1,14 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from eralchemy import render_er
+from sqlalchemy.sql import func
+
+time_created = Column(DateTime(timezone=True), server_default=func.now())
+time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
 Base = declarative_base()
 
@@ -20,6 +24,8 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     follower = relationship("Follower")
+    comment = relationship("Comment")
+    post = relationship("Post")
     favorites = relationship("Favorites")
 
     def follower(self):
@@ -70,9 +76,8 @@ class Media(Base):
 
 
 class Favorites(Base):
-    __tablename__ = 'add_favorites'
+    __tablename__ = 'favorites'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     comment_id = Column(Integer, ForeignKey('comment.id'))
     post_id = Column(Integer, ForeignKey('post.id'))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
