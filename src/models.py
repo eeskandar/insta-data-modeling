@@ -26,7 +26,6 @@ class User(Base):
     follower = relationship("Follower")
     comment = relationship("Comment")
     post = relationship("Post")
-    favorites = relationship("Favorites")
 
     def follower(self):
         return None
